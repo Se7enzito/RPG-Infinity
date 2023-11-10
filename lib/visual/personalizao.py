@@ -203,7 +203,7 @@ class personalizacao:
         ft = tkFont.Font(family='Times',size=10)
         GButton_200["font"] = ft
         GButton_200["fg"] = "#000000"
-        GButton_200["justify"] = "center"
+        # GButton_200["justify"] = "center"
         GButton_200["text"] = "Carregar"
         GButton_200.place(x=360,y=350,width=70,height=30)
         GButton_200["command"] = self.GButton_200_command
@@ -227,6 +227,16 @@ class personalizacao:
         validate_letras = root.register(self.validar_letras)
         GLineEdit_332.config(validate="key", validatecommand=(validate_letras, "%P"))
         GLineEdit_643.config(validate="key", validatecommand=(validate_letras, "%P"))
+
+        GMessage_12=tk.Message(root)
+        ft = tkFont.Font(family='Times',size=10)
+        GMessage_12["font"] = ft
+        GMessage_12["fg"] = "#333333"
+        GMessage_12["justify"] = "center"
+        GMessage_12["text"] = "Os atributos de força e inteligência devem ser entre 1 e 10"
+        GMessage_12.place(x=55,y=0,width=150,height=80)
+
+        self.GMessage_12 = GMessage_12
 
     def validar_letras(self, nova_letra):
         return nova_letra.isalpha() or nova_letra == ""
@@ -262,12 +272,13 @@ class personalizacao:
             nova_forca = forca
         if (nova_inteligencia == None):
             nova_inteligencia = inteligencia
-        
-        conn.atualizar_personalizacao(nova_nome, nova_forca, nova_inteligencia, nova_cor_de_pele, nova_cor_de_cabelo, self.user)
 
-        print("Dados atualizados")
+        if (nova_inteligencia <= 10 and nova_forca <= 10):
+            conn.atualizar_personalizacao(nova_nome, nova_forca, nova_inteligencia, nova_cor_de_pele, nova_cor_de_cabelo, self.user)
 
-        self.GButton_200_command()
+            print("Dados atualizados")
+
+            self.GButton_200_command()
 
 
     def GButton_200_command(self):
