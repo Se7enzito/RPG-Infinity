@@ -14,13 +14,13 @@ class Conexao:
     def desconectar(self) -> bool:
         self.connection.close()
 
-    def criar_user(self, name: str, user: str, senha: str) -> tuple:
+    def criar_user(self, name: str, user: str, senha: str, idade: int) -> tuple:
         self.conectar()
-        self.cursor.execute("INSERT INTO users (name, user, senha) VALUES (?, ?, ?)", (name, user, senha))
+        self.cursor.execute("INSERT INTO users (name, user, senha, idade) VALUES (?, ?, ?, ?)", (name, user, senha, idade))
         self.connection.commit()
         self.desconectar()
 
-        return (name, user, senha)
+        return (name, user, senha, idade)
     
     def atualizar_nome(self, id: int, name: str) -> str:
         self.conectar()
@@ -51,7 +51,31 @@ class Conexao:
         consulta = self.cursor.execute("SELECT * FROM users WHERE user = ?", (user,)).fetchall()
         self.desconectar()
 
-        return consulta
+        return consulta[0]
+    
+    def consultar_personalizacao(self, user: str) -> list:
+        self.conectar()
+        consulta = self.cursor.execute("SELECT forca, inteligencia, cor_de_pele, cor_de_cabelo, name FROM users WHERE user = ?", (user,)).fetchall()
+        self.desconectar()
+
+        return consulta[0]
+    
+    def atualizar_personalizacao(self, nome, forca, inteligencia, cor_pele, cor_cabelo, user) -> tuple:
+        self.conectar()
+        self.cursor.execute("UPDATE users SET name=?, forca=?, inteligencia=?, cor_de_pele=?, cor_de_cabelo=? WHERE user=?", (nome, forca, inteligencia, cor_pele, cor_cabelo, user))
+        self.connection.commit()
+        self.desconectar
+
+        return (nome, forca, inteligencia, cor_pele, cor_cabelo)
+    
+    def consultar_users_existentes(self) -> list:
+        self.conectar()
+        consulta = self.cursor.execute("SELECT user FROM users").fetchall()
+        self.desconectar()
+
+        usuarios = [user[0] for user in consulta]
+
+        return usuarios
 
     def limpar_tabela(self) -> None:
         self.conectar()

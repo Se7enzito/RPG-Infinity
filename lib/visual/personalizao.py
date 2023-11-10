@@ -1,8 +1,12 @@
 import tkinter as tk
 import tkinter.font as tkFont
+from lib.apis.dbAPI import Conexao
 
-class App:
-    def __init__(self, root):
+class personalizacao:
+    def __init__(self, root, user):
+        self.root = root
+        self.user = user
+
         #setting title
         root.title("Personalização")
         #setting window size
@@ -46,7 +50,6 @@ class App:
         GLineEdit_908["justify"] = "center"
         GLineEdit_908["text"] = "Nome"
         GLineEdit_908.place(x=170,y=100,width=70,height=30)
-        GLineEdit_908["show"] = "undefined"
 
         GLineEdit_530=tk.Entry(root)
         GLineEdit_530["borderwidth"] = "1px"
@@ -56,7 +59,6 @@ class App:
         GLineEdit_530["justify"] = "center"
         GLineEdit_530["text"] = "Inteligência"
         GLineEdit_530.place(x=170,y=200,width=70,height=30)
-        GLineEdit_530["show"] = "undefined"
 
         GLineEdit_842=tk.Entry(root)
         GLineEdit_842["borderwidth"] = "1px"
@@ -66,7 +68,6 @@ class App:
         GLineEdit_842["justify"] = "center"
         GLineEdit_842["text"] = "Força"
         GLineEdit_842.place(x=170,y=150,width=70,height=30)
-        GLineEdit_842["show"] = "undefined"
 
         GButton_377=tk.Button(root)
         GButton_377["bg"] = "#f0f0f0"
@@ -157,40 +158,45 @@ class App:
         GMessage_233["font"] = ft
         GMessage_233["fg"] = "#333333"
         GMessage_233["justify"] = "center"
-        GMessage_233["text"] = "Message"
-        GMessage_233.place(x=380,y=100,width=100,height=30)
+        GMessage_233["text"] = ""
+        # Nome
+        GMessage_233.place(x=380,y=100,width=120,height=30)
 
         GMessage_121=tk.Message(root)
         ft = tkFont.Font(family='Times',size=10)
         GMessage_121["font"] = ft
         GMessage_121["fg"] = "#333333"
         GMessage_121["justify"] = "center"
-        GMessage_121["text"] = "Message"
-        GMessage_121.place(x=385,y=300,width=100,height=30)
+        GMessage_121["text"] = ""
+        # Cor de Pele
+        GMessage_121.place(x=385,y=300,width=120,height=30)
 
         GMessage_593=tk.Message(root)
         ft = tkFont.Font(family='Times',size=10)
         GMessage_593["font"] = ft
         GMessage_593["fg"] = "#333333"
         GMessage_593["justify"] = "center"
-        GMessage_593["text"] = "Message"
-        GMessage_593.place(x=380,y=150,width=100,height=30)
+        GMessage_593["text"] = ""
+        # Forca
+        GMessage_593.place(x=380,y=150,width=120,height=30)
 
         GMessage_633=tk.Message(root)
         ft = tkFont.Font(family='Times',size=10)
         GMessage_633["font"] = ft
         GMessage_633["fg"] = "#333333"
         GMessage_633["justify"] = "center"
-        GMessage_633["text"] = "Message"
-        GMessage_633.place(x=395,y=250,width=100,height=30)
+        GMessage_633["text"] = ""
+        # Cor de Cabelo
+        GMessage_633.place(x=395,y=250,width=120,height=30)
 
         GMessage_464=tk.Message(root)
         ft = tkFont.Font(family='Times',size=10)
         GMessage_464["font"] = ft
         GMessage_464["fg"] = "#333333"
         GMessage_464["justify"] = "center"
-        GMessage_464["text"] = "Message"
-        GMessage_464.place(x=395,y=200,width=100,height=30)
+        GMessage_464["text"] = ""
+        # Inteligência
+        GMessage_464.place(x=395,y=200,width=120,height=30)
 
         GButton_200=tk.Button(root)
         GButton_200["bg"] = "#f0f0f0"
@@ -202,12 +208,95 @@ class App:
         GButton_200.place(x=360,y=350,width=70,height=30)
         GButton_200["command"] = self.GButton_200_command
 
+        self.GMessage_464 = GMessage_464
+        self.GMessage_633 = GMessage_633
+        self.GMessage_593 = GMessage_593
+        self.GMessage_121 = GMessage_121
+        self.GMessage_233 = GMessage_233
+
+        self.GLineEdit_332 = GLineEdit_332
+        self.GLineEdit_530 = GLineEdit_530
+        self.GLineEdit_643 = GLineEdit_643
+        self.GLineEdit_842 = GLineEdit_842
+        self.GLineEdit_908 = GLineEdit_908
+
+        validate_numero = root.register(self.validar_numero)
+        GLineEdit_530.config(validate="key", validatecommand=(validate_numero, "%P"))
+        GLineEdit_842.config(validate="key", validatecommand=(validate_numero, "%P"))
+
+        validate_letras = root.register(self.validar_letras)
+        GLineEdit_332.config(validate="key", validatecommand=(validate_letras, "%P"))
+        GLineEdit_643.config(validate="key", validatecommand=(validate_letras, "%P"))
+
+    def validar_letras(self, nova_letra):
+        return nova_letra.isalpha() or nova_letra == ""
+
+    def validar_numero(self, novo_numero):
+        return novo_numero.isdigit() or novo_numero == ""
+    
     def GButton_377_command(self):
-        print("command")
+        print("Sistema para atualizar informações")
+
+        conn = Conexao('lib/db/database.db')
+        dados_personalizao = conn.consultar_personalizacao(self.user)
+
+        nova_cor_de_pele = self.GLineEdit_332.get()
+        nova_nome = self.GLineEdit_908.get()
+        nova_cor_de_cabelo = self.GLineEdit_643.get()
+        nova_forca = self.GLineEdit_842.get()
+        nova_inteligencia = self.GLineEdit_530.get()
+
+        forca = dados_personalizao[0]
+        inteligencia = dados_personalizao[1]
+        cor_de_pele = dados_personalizao[2]
+        cor_de_cabelo = dados_personalizao[3]
+        nome = dados_personalizao[4]
+
+        if (nova_cor_de_pele == None):
+            nova_cor_de_pele = cor_de_pele
+        if (nova_nome == None):
+            nova_nome = nome
+        if (nova_cor_de_cabelo == None):
+            nova_cor_de_cabelo == cor_de_cabelo
+        if (nova_forca == None):
+            nova_forca = forca
+        if (nova_inteligencia == None):
+            nova_inteligencia = inteligencia
+        
+        conn.atualizar_personalizacao(nova_nome, nova_forca, nova_inteligencia, nova_cor_de_pele, nova_cor_de_cabelo, self.user)
+
+        print("Dados atualizados")
+
+        self.GButton_200_command()
 
 
     def GButton_200_command(self):
-        print("command")
+        print("Sistema para carregar informações")
+
+        conn = Conexao('lib/db/database.db')
+        dados_personalizao = conn.consultar_personalizacao(self.user)
+
+        forca = dados_personalizao[0]
+        inteligencia = dados_personalizao[1]
+        cor_de_pele = dados_personalizao[2]
+        cor_de_cabelo = dados_personalizao[3]
+        nome = dados_personalizao[4]
+
+        self.GMessage_464.config(text=inteligencia)
+        self.GMessage_633.config(text=cor_de_cabelo)
+        self.GMessage_593.config(text=forca)
+        self.GMessage_121.config(text=cor_de_pele)
+        self.GMessage_233.config(text=nome)
+
+        print(dados_personalizao)
+
+    def abrir_tela(self):
+        self.root.deiconify()
+
+    def fechar_tela(self):
+        # self.root.withdraw()
+
+        self.root.destroy()
 
 if __name__ == "__main__":
     # root = tk.Tk()

@@ -1,9 +1,13 @@
 import tkinter as tk
 import tkinter.font as tkFont
+from lib.visual.login import login as logando
+from lib.visual.registrar import registro as registramento
 
 class inicial:
     def __init__(self, root):
-        root.title("undefined")
+        self.root = root
+
+        root.title("Tela Inicial")
         width=700
         height=700
         screenwidth = root.winfo_screenwidth()
@@ -33,14 +37,42 @@ class inicial:
         GButton_73["command"] = self.GButton_73_command
 
     def GButton_457_command(self):
-        print("command")
+        print("Sistema para login")
+
+        self.fechar_tela()
+
+        # login = tk.Toplevel(self.root)
+        login = tk.Tk()
+        logar = logando(login)
+
+        logar.abrir_tela()
 
 
     def GButton_73_command(self):
-        print("command")
+        print("Sistema para registro")
+
+        self.fechar_tela()
+
+        # registro = tk.Toplevel(self.root)
+        registro = tk.Tk()
+        registrar = registramento(registro)
+
+        registrar.abrir_tela()
+
+    def abrir_tela(self):
+        # self.root.mainloop()
+
+        self.root.deiconify()
+
+    def fechar_tela(self):
+        # self.root.withdraw()
+        
+        self.root.destroy()
 
 if __name__ == "__main__":
     # root = tk.Tk()
-    # app = App(root)
+    # app = inicial(root)
+
+    # app.abrir_tela()
     # root.mainloop()
     pass
